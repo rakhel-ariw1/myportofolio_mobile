@@ -1,30 +1,53 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:myportofolio_mobile/main.dart';
+import 'package:myportofolio_mobile/menu.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Identitas dan tiga menu dengan warna berbeda tampil', (
+    tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
+    expect(find.text('2506605462'), findsOneWidget);
+    expect(find.text('Rakhel Aqeela Hapsari Ariwibowo'), findsOneWidget);
+    expect(find.text('PBP B'), findsOneWidget);
+    expect(find.byType(InfoCard), findsNWidgets(3));
+    expect(find.byType(ItemCard), findsNWidgets(3));
+    final colors = tester
+        .widgetList<Material>(
+          find.descendant(
+            of: find.byType(ItemCard),
+            matching: find.byType(Material),
+          ),
+        )
+        .map((widget) => widget.color)
+        .toSet();
+    expect(colors.length, 3);
+    expect(tester.takeException(), isNull);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  for (final name in ['Lihat Proyek', 'Tambah Proyek', 'Logout']) {
+    testWidgets('Tombol $name menampilkan SnackBar yang sesuai', (
+      tester,
+    ) async {
+      await tester.pumpWidget(const MyApp());
+      await tester.tap(find.text(name));
+      await tester.pumpAndSettle();
+      expect(find.text('Kamu telah menekan tombol $name!'), findsOneWidget);
+    });
+  }
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Layar kecil dapat digulir tanpa overflow', (tester) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MyApp());
+    expect(tester.takeException(), isNull);
+    await tester.ensureVisible(find.text('Logout'));
+    await tester.tap(find.text('Logout'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kamu telah menekan tombol Logout!'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
