@@ -1,4 +1,8 @@
-﻿### Tugas 7
+﻿# MyPortfolio Mobile
+
+Aplikasi portofolio Flutter milik Rakhel Aqeela Hapsari Ariwibowo (2506605462, PBP F)
+
+### Tugas 7
 
 1. Widget tree adalah susunan hierarkis widget yang mendeskripsikan antarmuka. Widget induk membungkus atau mengatur widget anak melalui properti seperti `child`, `children`, `home`, dan `body`. Contohnya, `MyApp` membangun `MaterialApp`, yang menampilkan `MyHomePage` sebagai `home`. Halaman tersebut membangun `Scaffold` dengan `AppBar` dan isi halaman. `Column` menyusun beberapa anak secara vertikal, sedangkan `Padding` memberikan ruang di sekitar satu anak. Dalam layout, batas ukuran mengalir dari induk ke anak, anak menentukan ukurannya dalam batas itu, lalu induk menentukan posisi anak. Perubahan konfigurasi dapat memicu pembangunan ulang bagian tree yang terkait.
 2. Berikut semua jenis widget yang ditulis langsung dalam implementasi aplikasi:
@@ -35,6 +39,13 @@ Semua widget kustom tersebut mewarisi `StatelessWidget`. `Theme` dan `ScaffoldMe
 
    Hot restart memulai ulang aplikasi Dart dan menghapus state yang sedang berjalan. Gunakan ketika perlu menjalankan kembali main/initState atau ketika perubahan struktur tipe tertentu tidak didukung hot reload. Full restart menghentikan lalu menjalankan aplikasi kembali, termasuk kompilasi ulang bagian platform yang diperlukan. Perubahan kode native Kotlin, Java, Swift, atau Objective-C memerlukan full restart; penambahan plugin dengan komponen native juga perlu rebuild platform. Rujukan: [Flutter hot reload](https://docs.flutter.dev/tools/hot-reload).
 
+### Tugas 8
+
+1. `Navigator.push()` menambahkan halaman di atas stack sehingga halaman sebelumnya masih bisa dibuka lewat Back. `pushReplacement()` mengganti halaman paling atas, sedangkan `pop()` menghapus route teratas, misalnya untuk menutup dialog atau kembali dari form. Kartu Tambah Proyek dan Tambah Edukasi memakai `push()`. Drawer ditutup dengan `pop()`, kemudian opsi Home memakai `pushReplacement()` untuk mengganti halaman aktif dengan `MyHomePage`. Pergantian lewat drawer tidak menambahkan halaman baru di atas halaman aktif seperti kartu. Jika ada route lain di bawahnya, route tersebut tetap ada. Pada Chrome, opsi Home dapat digunakan untuk kembali tanpa bergantung pada tombol Back browser.
+2. `Scaffold` menyediakan struktur halaman, `AppBar` menampilkan judul, dan `Drawer` menyediakan menu navigasi yang sama. `LeftDrawer` digunakan kembali di halaman utama, proyek, dan edukasi. Ketiga AppBar serta header drawer memakai `Theme.of(context).colorScheme.primary`, sehingga warna utama dari tema indigo konsisten. Warna teks AppBar diatur melalui tema aplikasi.
+3. Form disusun vertikal dengan `Column` supaya urutan input mudah diikuti. `Padding` memberi ruang dari tepi layar dan `SizedBox` memisahkan field. `SingleChildScrollView` memungkinkan pengguna mencapai input terakhir dan tombol Simpan di layar sempit atau saat keyboard mengurangi tinggi area form. `SafeArea` menghindari area sistem; Scaffold menyesuaikan body terhadap keyboard. Isi dialog juga bisa digulir untuk ringkasan yang panjang.
+4. `GlobalKey<FormState>` memberi akses ke state form. Setiap `validator` mengembalikan pesan jika input salah dan `null` jika benar. Tombol Simpan memanggil `validate()`; hanya jika semua valid, `save()` mengambil nilai dan dialog ditampilkan. Nama institusi berisi tiga spasi ditolak karena kosong setelah `trim()`. Tahun selesai 2024 dengan tahun mulai 2025 juga ditolak. `TextInputType.number` hanya memilih jenis keyboard, bukan menjamin validitas: teks hasil paste tetap harus diperiksa. Dropdown membatasi pilihan jenjang, sedangkan input opsional boleh kosong sesuai model.
+
 ## Penggunaan AI
-Ringkasan log bantuan AI:
-Menyusun tes identitas, warna tombol, pesan SnackBar, dan interaksi pada layar kecil
+
+memperbaiki import dan merapikan struktur file

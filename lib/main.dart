@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/menu.dart';
+import 'package:myportofolio_mobile/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +18,10 @@ class MyApp extends StatelessWidget {
           secondary: Colors.amber[700],
         ),
         useMaterial3: true,
+        appBarTheme: const AppBarTheme(foregroundColor: Colors.white),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
       ),
       home: const MyHomePage(),
     );

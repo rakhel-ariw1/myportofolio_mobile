@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myportofolio_mobile/main.dart';
-import 'package:myportofolio_mobile/menu.dart';
+import 'package:myportofolio_mobile/screens/menu.dart';
+import 'package:myportofolio_mobile/widgets/project_card.dart';
 
 void main() {
-  testWidgets('Identitas dan tiga menu dengan warna berbeda tampil', (
+  testWidgets('Identitas dan empat menu dengan warna berbeda tampil', (
     tester,
   ) async {
     await tester.pumpWidget(const MyApp());
@@ -12,7 +13,7 @@ void main() {
     expect(find.text('Rakhel Aqeela Hapsari Ariwibowo'), findsOneWidget);
     expect(find.text('PBP B'), findsOneWidget);
     expect(find.byType(InfoCard), findsNWidgets(3));
-    expect(find.byType(ItemCard), findsNWidgets(3));
+    expect(find.byType(ItemCard), findsNWidgets(4));
     final colors = tester
         .widgetList<Material>(
           find.descendant(
@@ -22,7 +23,7 @@ void main() {
         )
         .map((widget) => widget.color)
         .toSet();
-    expect(colors.length, 3);
+    expect(colors.length, 4);
     expect(tester.takeException(), isNull);
   });
 

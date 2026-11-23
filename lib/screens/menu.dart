@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/widgets/project_card.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -10,6 +12,7 @@ class MyHomePage extends StatelessWidget {
   static const List<ItemHomepage> items = [
     ItemHomepage('Lihat Proyek', Icons.folder, Color(0xFF1565C0)),
     ItemHomepage('Tambah Proyek', Icons.add_circle, Color(0xFF2E7D32)),
+    ItemHomepage('Tambah Edukasi', Icons.school, Color(0xFF6A1B9A)),
     ItemHomepage('Logout', Icons.logout, Color(0xFFC62828)),
   ];
 
@@ -23,6 +26,7 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      drawer: const LeftDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -101,56 +105,6 @@ class InfoCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(content, textAlign: TextAlign.center),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Warna disimpan bersama data menu agar ItemCard tidak perlu percabangan.
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-  final Color color;
-
-  const ItemHomepage(this.name, this.icon, this.color);
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: item.color,
-      borderRadius: BorderRadius.circular(12),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Kamu telah menekan tombol ${item.name}!'),
-              ),
-            );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(item.icon, color: Colors.white, size: 30),
-              const SizedBox(height: 8),
-              Text(
-                item.name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
         ),
       ),
     );
