@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:provider/provider.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
 
@@ -13,11 +15,18 @@ class MyHomePage extends StatelessWidget {
     ItemHomepage('Lihat Proyek', Icons.folder, Color(0xFF1565C0)),
     ItemHomepage('Tambah Proyek', Icons.add_circle, Color(0xFF2E7D32)),
     ItemHomepage('Tambah Edukasi', Icons.school, Color(0xFF6A1B9A)),
-    ItemHomepage('Logout', Icons.logout, Color(0xFFC62828)),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
+    final actions = [
+      ...items,
+      if (isLoggedIn)
+        const ItemHomepage('Logout', Icons.logout, Color(0xFFC62828))
+      else
+        const ItemHomepage('Login', Icons.login, Color(0xFF37474F)),
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -68,7 +77,7 @@ class MyHomePage extends StatelessWidget {
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
-                    children: items
+                    children: actions
                         .map(
                           (item) =>
                               SizedBox(width: cardWidth, child: ItemCard(item)),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
@@ -8,6 +12,8 @@ class LeftDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
+    final pageContext = Scaffold.of(context).context;
     return Drawer(
       child: ListView(
         children: [
@@ -38,42 +44,53 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
-              );
-            },
+            onTap: () => _replace(context, const MyHomePage()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.folder_outlined),
+            title: const Text('View Projects'),
+            onTap: () => _replace(context, const ProjectListScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.add_circle_outline),
             title: const Text('Add Project'),
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProjectFormPage(),
-                ),
-              );
+              if (await ensureLoggedIn(pageContext) && pageContext.mounted) {
+                Navigator.pushReplacement(
+                  pageContext,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ProjectFormPage(),
+                  ),
+                );
+              }
             },
           ),
           ListTile(
             leading: const Icon(Icons.school_outlined),
             title: const Text('Add Education'),
-            onTap: () {
+            onTap: () => _replace(context, const EducationFormPage()),
+          ),
+          ListTile(
+            leading: Icon(isLoggedIn ? Icons.logout : Icons.login),
+            title: Text(isLoggedIn ? 'Logout' : 'Login'),
+            onTap: () async {
               Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => const EducationFormPage(),
-                ),
-              );
+              if (isLoggedIn) {
+                await logoutWithFeedback(pageContext);
+              } else {
+                await ensureLoggedIn(pageContext);
+              }
             },
           ),
         ],
       ),
     );
+  }
+
+  void _replace(BuildContext context, Widget page) {
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    navigator.pushReplacement(MaterialPageRoute<void>(builder: (_) => page));
   }
 }

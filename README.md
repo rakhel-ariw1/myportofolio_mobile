@@ -46,6 +46,34 @@ Semua widget kustom tersebut mewarisi `StatelessWidget`. `Theme` dan `ScaffoldMe
 3. Form disusun vertikal dengan `Column` supaya urutan input mudah diikuti. `Padding` memberi ruang dari tepi layar dan `SizedBox` memisahkan field. `SingleChildScrollView` memungkinkan pengguna mencapai input terakhir dan tombol Simpan di layar sempit atau saat keyboard mengurangi tinggi area form. `SafeArea` menghindari area sistem; Scaffold menyesuaikan body terhadap keyboard. Isi dialog juga bisa digulir untuk ringkasan yang panjang.
 4. `GlobalKey<FormState>` memberi akses ke state form. Setiap `validator` mengembalikan pesan jika input salah dan `null` jika benar. Tombol Simpan memanggil `validate()`; hanya jika semua valid, `save()` mengambil nilai dan dialog ditampilkan. Nama institusi berisi tiga spasi ditolak karena kosong setelah `trim()`. Tahun selesai 2024 dengan tahun mulai 2025 juga ditolak. `TextInputType.number` hanya memilih jenis keyboard, bukan menjamin validitas: teks hasil paste tetap harus diperiksa. Dropdown membatasi pilihan jenjang, sedangkan input opsional boleh kosong sesuai model.
 
+## Tutorial 10
+
+Jalankan backend Django lokal dari repo `myportofolio`.
+
+```sh
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+Dari repo Flutter, buat kode serialisasi lalu pilih target.
+
+```sh
+flutter pub get
+dart run build_runner build
+flutter run
+# Atau jalankan di Chrome:
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000
+```
+
+Emulator Android memakai `http://10.0.2.2:8000` secara default. Akses HTTP
+lokal di Android tersedia pada build debug. Daftar proyek bisa diakses publik.
+Untuk menambah proyek, login dengan akun superuser Django.
+
+Untuk APK rilis dari GitHub Actions, isi variabel repo `API_BASE_URL` dengan
+URL HTTPS backend yang sudah di-deploy. Job `build_apk` mengunggah artefak
+`app-release-apk` setelah pemeriksaan CI lulus.
+
 ## Penggunaan AI
 
 memperbaiki import dan merapikan struktur file

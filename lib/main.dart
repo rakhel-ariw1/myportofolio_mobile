@@ -20,23 +20,26 @@ class MyApp extends StatelessWidget {
         if (apiClient case final client?)
           Provider<ApiClient>.value(value: client)
         else
-          Provider(create: (_) => ApiClient(), dispose: (_, api) => api.close()),
+          Provider(
+            create: (_) => ApiClient(),
+            dispose: (_, api) => api.close(),
+          ),
         ChangeNotifierProvider(create: (context) => AuthState(context.read())),
       ],
       child: MaterialApp(
-      title: 'MyPortfolio',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-          secondary: Colors.amber[700],
+        title: 'MyPortfolio',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            secondary: Colors.amber[700],
+          ),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(foregroundColor: Colors.white),
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(),
+          ),
         ),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(foregroundColor: Colors.white),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-        ),
-      ),
-      home: const MyHomePage(),
+        home: const MyHomePage(),
       ),
     );
   }

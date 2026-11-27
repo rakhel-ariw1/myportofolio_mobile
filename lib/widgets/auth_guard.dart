@@ -5,29 +5,22 @@ import 'package:provider/provider.dart';
 
 Future<bool> ensureLoggedIn(BuildContext context) async {
   if (context.read<AuthState>().isLoggedIn) return true;
-  return await Navigator.of(context).push<bool>(
-    MaterialPageRoute(builder: (_) => const LoginScreen()),
-  ) ?? false;
+  return await Navigator.of(context)
+          .push<bool>(MaterialPageRoute(builder: (_) => const LoginScreen())) ??
+      false;
 }
 
 Future<void> logoutWithFeedback(BuildContext context) async {
   final auth = context.read<AuthState>();
   if (!auth.isLoggedIn) return;
-  final String message;
+  var message = 'Berhasil logout.';
   try {
     await auth.logout();
   } catch (_) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Keluar dari aplikasi. Token gagal dicabut di server.')),
-      );
-    }
-    return;
+    message = 'Keluar dari aplikasi. Token gagal dicabut di server.';
   }
-  message = 'Berhasil logout.';
   if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

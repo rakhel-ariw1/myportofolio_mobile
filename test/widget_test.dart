@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/main.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
@@ -27,16 +30,31 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  for (final name in ['Lihat Proyek', 'Tambah Proyek', 'Logout']) {
-    testWidgets('Tombol $name menampilkan SnackBar yang sesuai', (
-      tester,
-    ) async {
-      await tester.pumpWidget(const MyApp());
-      await tester.tap(find.text(name));
-      await tester.pumpAndSettle();
-      expect(find.text('Kamu telah menekan tombol $name!'), findsOneWidget);
-    });
-  }
+  testWidgets('Daftar dan detail proyek dapat dibuka tanpa login', (
+    tester,
+  ) async {
+    final api = ApiClient(
+      client: MockClient((request) async {
+        expect(request.method, 'GET');
+        expect(request.url.path, '/api/v1/projects/');
+        expect(request.headers['authorization'], isNull);
+        return http.Response(
+          '[{"id":"abc","title":"Portofolio","description":"Aplikasi mobile",'
+          '"tech_stack":"Flutter","project_url":"https://example.com"}]',
+          200,
+        );
+      }),
+    );
+    addTearDown(api.close);
+    await tester.pumpWidget(MyApp(apiClient: api));
+    await tester.tap(find.text('Lihat Proyek'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Portofolio'));
+    await tester.pumpAndSettle();
+    expect(find.text('Detail Proyek'), findsOneWidget);
+    expect(find.text('https://example.com'), findsOneWidget);
+    expect(find.byType(Image), findsNothing);
+  });
 
   testWidgets('Layar kecil dapat digulir tanpa overflow', (tester) async {
     tester.view.physicalSize = const Size(320, 568);
@@ -45,10 +63,10 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(const MyApp());
     expect(tester.takeException(), isNull);
-    await tester.ensureVisible(find.text('Logout'));
-    await tester.tap(find.text('Logout'));
+    await tester.ensureVisible(find.text('Login'));
+    await tester.tap(find.text('Login'));
     await tester.pumpAndSettle();
-    expect(find.text('Kamu telah menekan tombol Logout!'), findsOneWidget);
+    expect(find.text('Username'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

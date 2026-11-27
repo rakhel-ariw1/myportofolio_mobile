@@ -41,10 +41,12 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
     body: FutureBuilder<List<Project>>(
       future: _projects,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.hasError) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasError) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -85,7 +87,8 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (_) => ProjectDetailScreen(project: project),
+                            builder: (_) =>
+                                ProjectDetailScreen(project: project),
                           ),
                         ),
                       ),

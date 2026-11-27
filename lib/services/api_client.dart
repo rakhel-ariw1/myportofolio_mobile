@@ -37,18 +37,27 @@ class ApiClient {
         .toList();
   }
 
-  Future<Project> createProject(Project project, {required String token}) async {
-    final response = await _post(_projectsPath, body: project.toJson(), token: token);
-    return Project.fromJson(jsonDecode(utf8.decode(response.bodyBytes))
-        as Map<String, dynamic>);
+  Future<Project> createProject(
+    Project project, {
+    required String token,
+  }) async {
+    final response = await _post(
+      _projectsPath,
+      body: project.toJson(),
+      token: token,
+    );
+    return Project.fromJson(
+      jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>,
+    );
   }
 
   Future<String> obtainToken(String username, String password) async {
-    final response = await _post('/api/v1/auth/token/', body: {
-      'username': username,
-      'password': password,
-    });
-    final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final response = await _post(
+      '/api/v1/auth/token/',
+      body: {'username': username, 'password': password},
+    );
+    final data =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return data['token'] as String;
   }
 
@@ -61,15 +70,17 @@ class ApiClient {
     Map<String, dynamic>? body,
     String? token,
   }) async {
-    final response = await _client.post(
-      _uri(path),
-      headers: {
-        'Accept': 'application/json',
-        if (body != null) 'Content-Type': 'application/json; charset=UTF-8',
-        if (token != null) 'Authorization': 'Token $token',
-      },
-      body: body == null ? null : jsonEncode(body),
-    ).timeout(_timeout);
+    final response = await _client
+        .post(
+          _uri(path),
+          headers: {
+            'Accept': 'application/json',
+            if (body != null) 'Content-Type': 'application/json; charset=UTF-8',
+            if (token != null) 'Authorization': 'Token $token',
+          },
+          body: body == null ? null : jsonEncode(body),
+        )
+        .timeout(_timeout);
     _ensureSuccess(response);
     return response;
   }

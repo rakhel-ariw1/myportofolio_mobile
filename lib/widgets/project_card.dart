@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
 
@@ -23,30 +25,20 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {
-          if (item.name == 'Tambah Edukasi') {
-            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => const EducationFormPage(),
-              ),
-            );
-            return;
-          }
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Kamu telah menekan tombol ${item.name}!'),
-              ),
-            );
-          if (item.name == 'Tambah Proyek') {
-            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => const ProjectFormPage(),
-              ),
-            );
+        onTap: () async {
+          switch (item.name) {
+            case 'Login':
+              await ensureLoggedIn(context);
+            case 'Logout':
+              await logoutWithFeedback(Scaffold.of(context).context);
+            case 'Tambah Proyek':
+              if (await ensureLoggedIn(context) && context.mounted) {
+                _open(context, const ProjectFormPage());
+              }
+            case 'Tambah Edukasi':
+              _open(context, const EducationFormPage());
+            case 'Lihat Proyek':
+              _open(context, const ProjectListScreen());
           }
         },
         child: Padding(
@@ -66,5 +58,9 @@ class ItemCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _open(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
   }
 }
